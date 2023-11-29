@@ -27,8 +27,18 @@ export const SideNav = () => {
       <Box sx={{ overflow: "auto" }}>
         <List>
           <ListItem disablePadding>
-            <ListItemButton component={NextLink} href="/">
+            <ListItemButton component={NextLink} href="/places/1">
               <ListItemText primary={"Рога и копыта"} />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding>
+            <ListItemButton component={NextLink} href="/places/2">
+              <ListItemText primary={"Булки и торты"} />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding>
+            <ListItemButton component={NextLink} href="/places/3">
+              <ListItemText primary={"Шаурма на углях"} />
             </ListItemButton>
           </ListItem>
         </List>
