@@ -1,11 +1,13 @@
 import Typography from "@mui/material/Typography";
 import { Chip, Divider, Stack } from "@mui/material";
+import { useRouter } from "next/router";
 
-export default function Page({ params }: { params: { placeId: number } }) {
+export default function Page() {
+  const router = useRouter();
   return (
     <>
       <Typography variant="h4" component="h1" gutterBottom>
-        Заведение {params.placeId}
+        Заведение {router.query.placeId}
       </Typography>
       <Typography variant="h6" gutterBottom>
         Тональность отзывов:

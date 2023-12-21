@@ -4,9 +4,9 @@ import Box from "@mui/material/Box";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import { SideNav } from "@/app/components/sideNav";
+import { SideNav } from "@/components/sideNav";
 import { ThemeProvider } from "@mui/material/styles";
-import { theme } from "../theme";
+import { theme } from "@/components/theme";
 
 export const WithSideNav: FC<PropsWithChildren> = ({ children }) => (
   <ThemeProvider theme={theme}>
