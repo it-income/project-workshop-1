@@ -31,7 +31,7 @@ export default function Page({ data }: { data: any }) {
   }
 
   useEffect(() => {
-    fetch(`http://0.0.0.0:8000/analyze?restaurant_name=${placeName}`)
+    fetch(`http://localhost:8000/analyze?restaurant_name=${placeName}`)
       .then((res) => res.json())
       .then((data) => {
         setReviewsToneData(data);

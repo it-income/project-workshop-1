@@ -17,7 +17,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
   const [isLoading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://0.0.0.0:8000/get_feedback_by_restaurant")
+    fetch("http://localhost:8000/get_feedback_by_restaurant")
       .then((res) => res.json())
       .then((data) => {
         setData(data);
