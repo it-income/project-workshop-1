@@ -5,9 +5,16 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
+import CircularProgress from "@mui/material/CircularProgress";
 import NextLink from "next/link";
 
-export const SideNav = () => {
+export const SideNav = ({
+  isLoading,
+  data,
+}: {
+  isLoading: boolean;
+  data: any;
+}) => {
   return (
     <Drawer
       variant="permanent"
@@ -25,23 +32,25 @@ export const SideNav = () => {
     >
       <Toolbar />
       <Box sx={{ overflow: "auto" }}>
-        <List>
-          <ListItem disablePadding>
-            <ListItemButton component={NextLink} href="/places/1">
-              <ListItemText primary={"Рога и копыта"} />
-            </ListItemButton>
-          </ListItem>
-          <ListItem disablePadding>
-            <ListItemButton component={NextLink} href="/places/2">
-              <ListItemText primary={"Булки и торты"} />
-            </ListItemButton>
-          </ListItem>
-          <ListItem disablePadding>
-            <ListItemButton component={NextLink} href="/places/3">
-              <ListItemText primary={"Шаурма на углях"} />
-            </ListItemButton>
-          </ListItem>
-        </List>
+        {isLoading ? (
+          <Box display="flex" justifyContent="center" width={"100%"}>
+            <CircularProgress sx={{ marginY: 2 }} />
+          </Box>
+        ) : (
+          <List>
+            {data &&
+              Object.keys(data).map((placeName) => (
+                <ListItem disablePadding key={placeName}>
+                  <ListItemButton
+                    component={NextLink}
+                    href={`/places/${placeName}`}
+                  >
+                    <ListItemText primary={placeName} />
+                  </ListItemButton>
+                </ListItem>
+              ))}
+          </List>
+        )}
       </Box>
     </Drawer>
   );
