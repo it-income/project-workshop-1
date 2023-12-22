@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Request, Query
 from collections import defaultdict 
 import csv
 
@@ -11,7 +11,7 @@ app = FastAPI()
 # Инициализация класса анализатора
 feedback_analyzer = RestaurantFeedbackAnalyzer()
 
-@app.post("/analyze")
+@app.post("/analyzefeedback")
 async def analyze_feedback(request: Request):
     try:
         # Получите JSON из запроса и преобразуйте его в словарь
@@ -38,18 +38,49 @@ async def get_feedback_by_restaurant():
     # Преобразуем defaultdict обратно в обычный dict для возврата через API
     return dict(feedback_by_restaurant)
     
-@app.get("/get_feedback_as_tuples")
-async def get_feedback_as_tuples():
+@app.get("/restaurants")
+async def get_restaurants():
     csv_file_path = 'restaurant_feedback.csv'
-    feedback_list = []  # Список для хранения кортежей
+    restaurants = set()  # Используем множество для хранения уникальных названий ресторанов
+    
+    with open(csv_file_path, mode='r', encoding='utf-8') as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            restaurants.add(row['restaurant'])  # Добавляем название ресторана в множество
+    
+    return {"restaurants": list(restaurants)}
+    
+#csv_file_path = 'restaurant_feedback_ans.csv'
+@app.get("/analyze")
+async def analyze_feedback(restaurant_name: str = Query(..., alias='restarauntName')):
+    csv_file_path = 'restaurant_feedback_ans.csv'
+    
+    # Счётчики для каждого типа отзывов
+    feedback_counts = {'good': 0, 'neutral': 0, 'bad': 0}
+    total_count = 0  # Общее количество отзывов для расчета процентов
+    
     with open(csv_file_path, newline='', encoding='utf-8') as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
-            # Создание кортежа из названия ресторана и отзыва, добавление в список
-            feedback_list.append((row['restaurant'], row['feedback']))
-    return feedback_list
+            if row['restaurant'] == restaurant_name:
+                total_count += 1  # Увеличиваем общий счетчик отзывов
+                neutral = float(row['NEUTRAL'])
+                positive = float(row['POSITIVE'])
+                negative = float(row['NEGATIVE'])
+                
+                if positive > neutral and positive > negative:
+                    feedback_counts['good'] += 1
+                elif neutral > positive and neutral > negative:
+                    feedback_counts['neutral'] += 1
+                else:
+                    feedback_counts['bad'] += 1
     
- 
+    # Преобразование в проценты
+    feedback_percentages = {k: (v / total_count * 100) if total_count else 0 for k, v in feedback_counts.items()}
+    
+    return feedback_percentages
+    
+    
 # Запуск приложения Uvicorn
 if __name__ == "__main__":
     import uvicorn
